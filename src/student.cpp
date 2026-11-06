@@ -82,8 +82,23 @@ void clear(Node*& root) {
 // =============================================================================
 
 bool insert(Node*& root, int nilai) {
-    return false;
+    if (root == nullptr) {
+        root = new Node;
+        root->data = nilai;
+        root->left = nullptr;
+        root->right = nullptr;
+        return true;
+    }
+
+    if (nilai < root->data) {
+        return insert(root->left, nilai);
+    } else if (nilai > root->data) {
+        return insert(root->right, nilai);
+    } else {
+        return false;
+    }
 }
+
 
 // =============================================================================
 // SOAL 1b — cari                                                       15 poin
@@ -113,8 +128,19 @@ bool insert(Node*& root, int nilai) {
 // =============================================================================
 
 const Node* cari(const Node* root, int nilai) {
-    return nullptr;
+    if (root == nullptr) {
+        return nullptr;
+    }
+
+    if (nilai == root->data) {
+        return root;
+    } else if (nilai < root->data) {
+        return cari(root->left, nilai);
+    } else {
+        return cari(root->right, nilai);
+    }
 }
+
 
 // =============================================================================
 // SOAL 2a — minimum                                                    10 poin
@@ -146,8 +172,17 @@ const Node* cari(const Node* root, int nilai) {
 // =============================================================================
 
 const Node* minimum(const Node* root) {
-    return nullptr;
+    if (root == nullptr) {
+        return nullptr;
+    }
+
+    const Node* current = root;
+    while (current->left != nullptr) {
+        current = current->left;
+    }
+    return current;
 }
+
 
 // =============================================================================
 // SOAL 2b — hapus                                                      30 poin
@@ -209,8 +244,32 @@ const Node* minimum(const Node* root) {
 // =============================================================================
 
 bool hapus(Node*& root, int nilai) {
-    return false;
+    if (root == nullptr) {
+        return false;
+    }
+
+    if (nilai < root->data) {
+        return hapus(root->left, nilai);
+    } else if (nilai > root->data) {
+        return hapus(root->right, nilai);
+    } else {
+        if (root->left == nullptr) {
+            Node* temp = root->right;
+            delete root;
+            root = temp;
+            return true;
+        } else if (root->right == nullptr) {
+            Node* temp = root->left;
+            delete root;
+            root = temp;
+            return true;
+        }
+        const Node* successor = minimum(root->right);
+        root->data = successor->data;
+        return hapus(root->right, successor->data);
+    }
 }
+
 
 // =============================================================================
 // SOAL 3 — termahalTerbeli                                              25 poin
@@ -250,7 +309,21 @@ bool hapus(Node*& root, int nilai) {
 // =============================================================================
 
 const Node* termahalTerbeli(const Node* root, int uang) {
-    return nullptr;
+    const Node* kandidat = nullptr;
+    const Node* current = root;
+
+    while (current != nullptr) {
+        if (current->data == uang) {
+            return current; 
+        } else if (current->data < uang) {
+            kandidat = current;       
+            current = current->right; 
+        } else {
+            current = current->left;  
+        }
+    }
+
+    return kandidat;
 }
 
 // =============================================================================
